@@ -1,0 +1,1 @@
+study_2.pyはstudy_1_memoの内容に即している。
