@@ -1,0 +1,10 @@
+# .gitignore
+
+# PyInstaller関連の除外設定
+build/
+dist/
+*.spec
+
+# Python関連の一時ファイル（ついでに入れておくと便利です）
+__pycache__/
+*.pyc
