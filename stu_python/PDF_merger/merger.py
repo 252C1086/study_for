@@ -10,7 +10,7 @@ class PDFMergerApp(QMainWindow):
 
         self.setAcceptDrops(True)
 
-        self.setWindowTitle("俺のためのPDF結合マン")
+        self.setWindowTitle("PDF結合マン")
         self.resize(700, 500)
         self.label = QLabel("ここに結合したいPDFファイルをドラッグ&ドロップ")
         self.recognition_label = QLabel("選択したファイルをドラッグし順番を入れ替えることができます")
