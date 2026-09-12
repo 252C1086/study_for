@@ -1,0 +1,146 @@
+1.データの読み書き
+    read_csv() <-> to_csv()     //csvデータの読み書き
+    read_excel() <-> to_excel() //excelデータの読み書き
+    read_json() <-> to_json()   //jsonデータの読み書き
+    read_sql() <-> to_sql()     //sqlデータの読み書き
+
+    @引数
+        sep="区切り文字"        //csv以外を扱うときなどに区切りを指定できる
+        encoding="文字コード"   //文字コードを指定できる
+        usecols=["列名"]        //必要な列だけ読み込む->メモリ節約可能
+        index_col="列名"        //インデックスにしたい列を指定
+        dtype={"列名": 型名}    //任意の列の値の型を指定できる
+        na_values=["欠損表記"]  //独自の欠損表記をここで指定することでNaNに変換できる
+        parse_dates=["日付列"]  //文字列の日付を[datetime64]に変換
+        chunksize=ｎ            //巨大ファイルを分割して読み込む
+
+2.データ操作
+    head(ｎ) / tail(ｎ)         //データの{先頭/末尾}を表示,引数ｎで表示数選択
+    info()                      //データのタイプやメモリ使用量など
+    @引数
+        verbose=True/None               //Trueで詳細表示
+        buf=open("ファイル名", "w/r/a")  //出力先を選択
+        max_cols=ｎ                     //列数が多い時の省略選択
+        memory_usage=True/False/"deep"  //メモリ使用量表示選択、"deep"でより正確に
+        show_counts=True\False          //Trueで非欠損数を表示
+    describe()                  //最頻値や最大値などの箱髭図が書けるような情報
+    @引数ｎ
+        percentiles=None/[ｎ]   //表示したいパーセンタイルを指定,0~1で指定
+        include=[dtype]         //統計量を計算するdtypeを指定、["object"]->文字列列のみ、["number"]->数値列のみ、複数指定可能
+        exclude=[dtype]         //除外したいdtypeを指定
+    shape() / columns() / index() //データの構造情報を取得
+    dtypes()                    //データの型
+    isnull() / notnull()        //欠損値の確認
+    @引数
+        axis=None/0/1           //None->要素ごとのTrue/False、0->行方向。1->列方向
+
+3.データ抽出・加工
+    loc[] / iloc[]              //ラベルやインデックスでデータ抽出する
+    @引数
+        "A" / ｎ                //単一ラベルや整数
+        ["A", "B"]              //ラベルのリスト
+        "A":"C"                 //ラベルのスライス
+        [True/False, True/False]//boolean配列
+    query("条件式")             //条件によるデータ抽出
+    drop() / rename()           //行列の削除・名前変更
+    @引数
+        labels="列名"
+        axis=0/1                //0で行、1で列
+        errors="raise"/"ignore" //raise->存在しないラベルならエラー、ignore->ラベルが存在しなくても続行
+    sort_values(
+        by="列名"
+        ascending=True/False    //True->昇順,False->降順
+        inplace=True/False      //元のDFの書き換え
+        na_position="first/last"//欠損値を先頭or末尾に並べる
+    )
+
+4.集計
+    groupby()                   //データを集計・変換・フィルタリングする
+    @引数
+        by="列名"/["列名のリスト"]//なにに関してグループ化するか
+        level=0/"階層名"/[複数階層] //MultiIndexの階層でグループ化
+        as_index=True/False     //Ture->グループキーがIndexに、False->SQL風の表になる
+        sort=True/False         //True->グループキーを昇順、False->元の順序のまま
+        dropna=True/False       //True->NaNを除外, False->NaNを1つのグループとする
+        observed=True/False     //True->出現したカテゴリのみ表示,False->全カテゴリを表示
+    agg()                       //集計
+    @引数
+        "sum"                   //合計
+        "mean"                  //平均
+        "max" / "min"           //最大値 / 最小値
+        "count"                 //++1
+        "median"                //中央値
+        "std"                   //標準偏差
+        "var"                   //分散
+    pivot()                     //表の組み換えメソッド
+    @引数
+        index="列名"            //行ラベルに使う列名を指定
+        columns="行名"          //列ラベルに使う行名を指定
+        values="列名"           //表の中身に使う列名(文字列)を指定
+
+5.欠損値処理
+    isna() / notna()            //欠損でTrue, 非欠損でTrue
+    @引数
+        axis=None/0/1           //Noneで要素ごとに、0->列方向走査、1->行方向走査
+    fillna()                    //欠損値を指定した値で埋める
+    @引数
+        value=0/"指定文字列"/True(etc..)    //単一値の指定
+            {"A": "α", "B": "β"}    //辞書指定
+        method="ffill"/"bfill"  //ffill->前の値で埋める,bfill->次の値で埋める
+        axis=0/1                //0で行方向、1で列方向
+        limit=ｎ                //連続する欠損を埋める最大数
+    dropna()                    //欠損を含む行or列を一括削除
+    @引数
+        axis=0/1                //0->行指定、1->列指定
+        how="any"/"all"         //any->欠損値が1つでもあれば削除,all->全部欠損なら削除
+        thresh=ｎ               //非欠損の数がｎ未満なら削除
+        subset=["列名"]         //特定の列だけを見て欠損判定
+
+6.可視化
+    plot()                      //折れ線・棒・散布図など
+    @引数
+        kind={
+            "line"                  //折れ線
+            "bar"                   //縦棒
+            "barh"                  //横棒
+            "scatter"               //散布図
+            "hist"                  //ヒストグラム
+            "box"                   //箱髭図
+            "area"                  //面グラフ
+            "pie"                   //円グラフ
+        }
+        x="str", y="str"            //x, yを指定可能
+        title="文字列"              //タイトルを指定
+        figsize=(ｎ, ｎ)            //グラフのサイズを指定
+        color="color"               //色を指定
+        grid=True/False             //グリッド線の表示
+    hist()                          //数値列の分布を確認できる
+    @引数
+        bins=ｎ                     //階級数を指定
+        range=(ｎ, ｎ)              //表示範囲を指定
+        density=True/False          //確率密度を表示可能
+        figsize=(width, height)     //図のサイズを指定する
+    boxhist()                       //箱髭図作成
+    @引数
+        column="列名"               //対象列を指定
+        by="category"               //グループ別に箱髭図を作成
+        figsize=(width, height)     //図のサイズを指定
+        grid=True/False             //グリッド線の表示可能
+
+7.結合
+    concat()                        //物理的に縦or横にくっつける処理
+    @引数
+        objs=[A, B]                 //結合したいデータのリスト
+        axis=0/1                    //0->縦方向に結合,1->横方向に結合
+        ignore_index=True/False     //Trueで新しくIndexを生成
+        join="outer"/"inner"        //outer->和集合,inner->積集合 defaultはouter.
+    merge()                         //共通の列をキーにして2つのデータフレームを結合
+    @引数
+        how="inner"/"left"/"right"/"outer"      //結合方法の選択
+        on="列名"                   //結合のキーとなる列名を指定
+    join()                          //index(行ラベル)をもとにした結合
+    @引数
+        other="df名"                //結合するdfを指定
+        how="left"/"right"/"outer"/"inner"      //結合方法を指定 defaultはleft.
+        
+        
