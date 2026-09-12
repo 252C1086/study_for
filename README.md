@@ -42,6 +42,7 @@
 >※このリストは学習中の技術を含みます。
 
 ## Repository Structure
+```text
 study_for/
 ├── image_recognition_AI/
 │   ├── dataset/
@@ -58,6 +59,7 @@ study_for/
 │       └── ...
 │
 └── README.md
+```
 
 **image_recognition_AI**
 画像認識AIの実装,ロボット作成に使用する部品をWebカメラで識別し関連情報やすよう方法を確認できるツールを作成中。
